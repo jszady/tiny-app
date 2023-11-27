@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/jszady/tiny-app/issues"
   },
-  "homepage": "https://github.com/jszady/tiny-app#readme"
+  "homepage": "https://github.com/jszady/tiny-app#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
