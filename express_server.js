@@ -40,7 +40,6 @@ app.get('/urls', (req, res) => {
 // this redirecrs the short URL to its original URL  
 app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
-  console.log(longURL);
   // redirects the user to the original URL 
   res.redirect(longURL);
 });
@@ -90,6 +89,16 @@ app.post('/urls/:id/delete', (req, res) => {
 
   // we are going to stay on the same page but just delete the url 
   res.redirect('/urls');
+})
+
+
+app.post('/urls/:id', (req, res) => {
+  
+  const id = req.params.id;
+
+  urlDatabase[id] = req.body.longURL;
+  
+  res.redirect(`/urls/`);
 })
 
 
