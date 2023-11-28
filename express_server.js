@@ -16,10 +16,6 @@ app.get('/urls.json', (req, res) => {
   res.send(urlDatabase);
 })
 
-app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
-});
 
 app.get('/urls', (req, res) => {
   
@@ -31,9 +27,24 @@ app.get('/urls', (req, res) => {
  
 })
 
+app.post("/urls", (req, res) => {
+  const id = generateRandomString();
+
+  // saves the random id and the longURL
+  urlDatabase[id] = req.body.longURL;
+
+  // this will redirect to the id urls:id
+  res.redirect(`/urls/${id}`);
+
+});
+
 app.get('/urls/new', (req, res) => {
   res.render('urls_new');
 })
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
+});
 
 app.get("/urls/:id", (req, res) => {
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id]};
@@ -51,5 +62,11 @@ app.listen(PORT, () => {
 
 
 function generateRandomString() {
-  
+  let result = ''
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+  for (let i = 0; i < 6; i++)
+  {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
 }
