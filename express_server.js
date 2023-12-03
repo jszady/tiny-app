@@ -77,7 +77,7 @@ app.get('/urls', (req, res) => {
   const userId = req.session.user_id;
   if(!userId)
   {
-   return res.redirect('/login');
+   return res.status(403).send("you must be logged in to see URLs");
   }
   const userUrls = helpers.urlsForUser(userId, urlDatabase);
   const templateVars = {
@@ -114,18 +114,27 @@ app.get("/u/:id", (req, res) => {
 */
 app.get("/urls/:id", (req, res) => {
   const userId = req.session.user_id;
+
   if (!userId) {
     return res.status(403).send("You must be logged in to access URLs.");
   }
-  //split these up 
   const urlBelongsToUser = urlDatabase[req.params.id].userID === userId;
   const urlObj = urlDatabase[req.params.id];
 
   if (!urlObj || !urlBelongsToUser) {
     return res.status(403).send("This URL does not belong to you.");
   }
+  const shortURL = req.params.id;
+
+  const url = urlDatabase[shortURL];
+  
+  if(!url) 
+  {
+    return res.status(403).send("URL not found");
+  }
+  
   const templateVars = { 
-    id: req.params.id, 
+    id: shortURL, 
     longURL: urlObj.longURL, 
     user: usersDb[userId]
   };
@@ -168,7 +177,13 @@ or shuld bring you to URLs if logged in
 */
 
 app.get('/', (req, res) => {
-  res.send("Hello");
+  const userId = req.session.user_id;
+  if(!userId)
+  {
+    res.redirect('/login');
+  } else {
+    res.redirect('/urls');
+  }
 })
 
 app.get('/urls.json', (req, res) => {
